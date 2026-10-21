@@ -34,7 +34,7 @@
       config = await r.json();
       config.schedule.sort((x, y) => x.time.localeCompare(y.time));
     } catch (e) {
-      if (!config) show('Can't read ' + CONFIG_URL + ' (' + e.message + ')');
+      if (!config) show('Erro ao ler ' + CONFIG_URL + ' (' + e.message + ')');
     }
   }
 
@@ -42,7 +42,7 @@
     if (!config || !config.schedule.length) return null;
     const d = new Date();
     const hhmm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-    // Último horário <= agora; antes do primeiro horário do dia, usa o primeiro.
+    // ultimo horario <= agora; antes do primeiro, usa o primeiro
     let slot = config.schedule[0];
     for (const s of config.schedule) if (s.time <= hhmm) slot = s;
     const key = (slot.tvs && slot.tvs[TV]) || slot.default;
@@ -59,17 +59,17 @@
       setTimeout(() => { cur.src = 'about:blank'; }, 1000);
       active = 1 - active;
     };
-    next.onload = () => setTimeout(finish, 3000);   // dá tempo do Power BI renderizar
-    setTimeout(finish, 25000);                      // fallback se onload não disparar
+    next.onload = () => setTimeout(finish, 3000);   // tempo para o relatorio renderizar
+    setTimeout(finish, 25000);                      // fallback se onload nao disparar
     next.src = url;
   }
 
   function tick() {
-    if (!TV) { show('Informe the URL: rotator.html?tv=tv01'); return; }
+    if (!TV) { show('Informe a TV na URL: rotator.html?tv=tv01'); return; }
     const url = resolveUrl();
-    if (!url) { show('No report setup for "' + TV + '" neste horário'); return; }
-    if (DEBUG) show(TV + ' → ' + url);
-    else if (msg.textContent.startsWith('No report') || msg.textContent.startsWith('Informe')) show('');
+    if (!url) { show('Sem relatorio para "' + TV + '" neste horario'); return; }
+    if (DEBUG) show(TV + ' -> ' + url);
+    else if (msg.textContent.startsWith('Sem relatorio') || msg.textContent.startsWith('Informe')) show('');
     if (url !== currentUrl) { currentUrl = url; swapTo(url); }
   }
 
@@ -79,7 +79,7 @@
     setInterval(tick, 30 * 1000);
     setInterval(async () => { await loadConfig(); tick(); },
                 ((config && config.configReloadMinutes) || 5) * 60 * 1000);
-    // Reload to clear cache
+    // recarrega a pagina as 4h para limpar memoria
     setInterval(() => { const h = new Date().getHours(); if (h === 4) location.reload(); }, 60 * 60 * 1000);
   })();
 </script>
